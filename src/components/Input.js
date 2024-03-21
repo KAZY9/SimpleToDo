@@ -17,8 +17,18 @@ const Button = styled.button`
 	height: 28px;
 `;
 
+const MessageField = styled.div`
+	background-color: ${(props) => (props.messageColor ? "lightskyblue" : "lightcoral")};
+	color: white;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	margin: 5px 0;
+`;
+
 const Input = () => {
 	const [todo, setTodo] = useState("");
+	const [message, setMessage] = useState("")
+	const [ messageColor, setMessageColor ] = useState(true);
 	const { dispatch } = useContext(TodoContext);
 
 	const getID = () => {
@@ -30,7 +40,12 @@ const Input = () => {
 	}
 
 	const addTodo = () => {
-		if(todo === '') return;
+		if(todo === '') {
+			setMessageColor(false);
+			setMessage("入力してください。");
+			setTimeout(() => setMessage(""), 2500);
+			return;
+		};
 		dispatch({
 			type: "add",
 			payload: {id: getID(), comment: todo}
@@ -47,11 +62,12 @@ const Input = () => {
 
 	return (
 		<InputField>
-			<div>
-				<InputArea type="text" onChange={changeTodo} value={todo} onKeyDown={handleKeyPress}　/>
-				<Button onClick={dispatch} >追加</Button>
-			</div>
-			<Item />
+			<InputArea type="text" onChange={changeTodo} value={todo} onKeyDown={handleKeyPress} maxLength={10}/>
+			<Button onClick={dispatch} >追加</Button>
+			<MessageField messageColor={messageColor} >
+				{message}
+			</MessageField>
+			<Item setMessage={setMessage} setMessageColor={setMessageColor} />
 		</InputField>
 	)
 }
