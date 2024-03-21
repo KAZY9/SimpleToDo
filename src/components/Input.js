@@ -18,7 +18,7 @@ const Button = styled.button`
 `;
 
 const MessageField = styled.div`
-	background-color: ${(props) => (props.messageColor ? "lightskyblue" : "lightcoral")};
+	background-color: ${(props) => (props.$bgcolor)};
 	color: white;
 	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 	border-radius: 5px;
@@ -40,10 +40,8 @@ const Input = () => {
 	}
 
 	const addTodo = () => {
-		if(todo === '') {
-			setMessageColor(false);
-			setMessage("入力してください。");
-			setTimeout(() => setMessage(""), 2500);
+		if(!todo) {
+			showMessage("入力してください。", false);
 			return;
 		};
 		dispatch({
@@ -51,23 +49,30 @@ const Input = () => {
 			payload: {id: getID(), comment: todo}
 		})
 		setTodo("");
+		setMessage("");
 	}
+
+	const showMessage = (msg, color) => {
+		setMessageColor(color);
+		setMessage(msg)
+		setTimeout(() => setMessage(""), 2500);
+	};
 
 	const handleKeyPress = (e) => {
 		if (e.key === 'Enter' && e.shiftKey) {
 			e.preventDefault();
-			addTodo(e);
+			addTodo();
 		}
 	}
 
 	return (
 		<InputField>
-			<InputArea type="text" onChange={changeTodo} value={todo} onKeyDown={handleKeyPress} maxLength={10}/>
-			<Button onClick={dispatch} >追加</Button>
-			<MessageField messageColor={messageColor} >
+			<InputArea type="text" onChange={changeTodo} value={todo} onKeyDown={handleKeyPress} maxLength={10} autoFocus={true}/>
+			<Button onClick={addTodo} >追加</Button>
+			<MessageField $bgcolor={messageColor ? "lightskyblue" : "lightcoral"} >
 				{message}
 			</MessageField>
-			<Item setMessage={setMessage} setMessageColor={setMessageColor} />
+			<Item showMessage={showMessage} />
 		</InputField>
 	)
 }

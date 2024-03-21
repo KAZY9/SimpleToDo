@@ -17,14 +17,12 @@ const ItemArea = styled.div`
   margin: 8px 10px;
 `;
 
-const Item = ({setMessage, setMessageColor}) => {
+const Item = ({showMessage}) => {
   const {state, dispatch} = useContext(TodoContext);
 
   const completeTodo = (id) => {
     dispatch({type: "complete", payload: id});
-    setMessageColor(true);
-    setMessage("よくできました！");
-		setTimeout(() => setMessage(""), 2500);
+    showMessage("よくできました！", true);
 	}
 
   return (
